@@ -191,6 +191,71 @@ def WiegandCode(user_data):
 	return StrFc+StrCc
 
 
+def SendWiegandCodewithAntenna(allText):
+	parameters = allText.split('|')
+
+	if len(parameters) !=2:
+		return
+
+	antena = parameters[0]
+	user = parameters[1]
+
+	firstsplitt=user[:30]
+
+	wiegandCode = firstsplitt[22:]
+
+	fc = wiegandCode[:4]
+
+	cc = wiegandCode[4:]
+
+	fc = str(fc)
+	cc =str(cc)
+    
+
+	strfc = str(int(fc,16))
+	strcc = str(int(cc,16))
+
+    
+
+	if int(fc,16) == 0 or int(cc,16) == 0:
+		return "0"
+
+	StrFc = "NULL"
+	StrCc = "NULL"
+
+
+    ####Fc
+
+	if len(strfc) == 1:
+		StrFc="00"+strfc
+
+	if len(strfc) == 2:
+		StrFc="0"+strfc
+
+	if len(strfc) == 3:
+		StrFc=strfc
+
+    #####CC
+
+	if len(strcc) == 1:
+		StrCc="0000"+strcc
+
+	if len(strcc) == 2:
+		StrCc="000"+strcc
+
+	if len(strcc) == 3:
+		StrCc="00"+strcc
+
+	if len(strcc) == 4:
+		StrCc="0"+strcc
+
+	if len(strcc) == 5:
+		StrCc = strcc
+
+   
+	return (antena,StrFc+StrCc)
+
+
 def send_serial(response, sequence):
 	RES =""
 	try:
