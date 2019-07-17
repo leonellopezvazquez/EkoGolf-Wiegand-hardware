@@ -211,14 +211,21 @@ def SendWiegandCodewithAntenna(allText):
 	fc = str(fc)
 	cc =str(cc)
     
+	strfc = 0
+	strcc = 0
+	
+	try:
+		strfc = str(int(fc,16))
+		strcc = str(int(cc,16))
+	except:
+		traceback.print_exc(file=sys.stdout)
+		return ("1","0")
 
-	strfc = str(int(fc,16))
-	strcc = str(int(cc,16))
+	
 
     
-
 	if int(fc,16) == 0 or int(cc,16) == 0:
-		return "0"
+		returnreturn ("1","0")
 
 	StrFc = "NULL"
 	StrCc = "NULL"
@@ -251,6 +258,9 @@ def SendWiegandCodewithAntenna(allText):
 
 	if len(strcc) == 5:
 		StrCc = strcc
+	
+	if StrFc=="NULL" or StrCc == "NULL":
+		return("1","0")
 
    
 	return (antena,StrFc+StrCc)
@@ -268,7 +278,15 @@ def send_serial(response, sequence):
 		else:
 			res = str(response)
 			RES=""
-			RES = WiegandCode(res)
+			Parameters = ""
+			antenna =""
+			Parameters = SendWiegandCodewithAntenna(res)
+			if len(Parameters)!=2:
+				return
+			
+			antenna = Parameters[0]
+			RES = Parameters[1]
+
 
 			if RES == "0":
 				return
@@ -297,18 +315,23 @@ def send_serial(response, sequence):
 
 			#response = "#" + response + CRLF
 
-			
-			print "sending response %s" % RES 
+			print "sending antena %s" % antenna
+			print "sending response %s" % RES
+			for char in antenna:
+				sport.write(char)
+
+			sport.write('|') 
 			
 			for char in RES:
 				print char
 				sport.write(char)
-	
+			
+			sport.write(LF)
+
 		response = ""
 
 	except:   
-		traceback.print_exc(file=sys.stdout)   
-
+		print "error serial"
 
 # callback to handle tag arrive events
 def tag_event(event):
@@ -362,7 +385,8 @@ def HiloProcesaEventoTags(**datos):
 			
 			try:
 				#print(tag_id +"|"+tid+"|"+"|"+nAntenna+"|"+user)
-				send_serial(user, "")
+				print(nAntenna+"|"+user)
+				send_serial(nAntenna+"|"+user, "")
 				#conn.send((tag_id +"|"+tid+"|"+nAntenna+"\n").encode())
 			except:
 				print "Se ha perdido la conexion con el cliente"
