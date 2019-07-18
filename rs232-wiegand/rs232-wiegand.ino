@@ -46,8 +46,8 @@ void loop() {
         
       int  ind1=AllInputData.indexOf('|');
       String antenna = AllInputData.substring(0,ind1);  
-      int ind2 = int  ind1=AllInputData.indexOf('|',ind1+1);
-      String data = AllInputData.substring(ind+1,ind2); 
+      int ind2=AllInputData.indexOf('|',ind1+1);
+      String data = AllInputData.substring(ind1+1,ind2); 
       
       bytecount = 0;
       SerialFlagDone=0;
